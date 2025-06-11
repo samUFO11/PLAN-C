@@ -1,0 +1,147 @@
+// Wait for DOM content to be fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Construction workers data
+    const workers = [
+        {
+            name: "خالد بوزازي",
+            specialty: "بناء",
+            experience: 10,
+            city: "تونس",
+            rating: 4.8,
+            reviews: 42,
+            hourlyRate: 25,
+            image: "https://public.youware.com/users-website-assets/prod/c528615e-cf6c-4a19-81c1-4db0d899d929/gaabdc01689a5cb1a874c2bc99d9e27509b79adf63d3e227d5a6fcae060ed5d2681a74147db195b7b157e3d6c278cd0cfb165b4feb3b8242582178130fabc10e4_640.jpg"
+        },
+        {
+            name: "صلاح الجوادي",
+            specialty: "بناء",
+            experience: 15,
+            city: "صفاقس",
+            rating: 4.9,
+            reviews: 67,
+            hourlyRate: 30,
+            image: "https://public.youware.com/users-website-assets/prod/c528615e-cf6c-4a19-81c1-4db0d899d929/g231ed345b0fcf925fd8d963d0212296ca33b6a90c1fc7615af61593a3f82cf96941eefe069b9f52d7038a2e759a4063b8a6edc4707d5c37a3e2bac94f44251fd_640.jpg"
+        },
+        {
+            name: "ضىي نيزار الذوِيري",
+            specialty: "بناء",
+            experience: 12,
+            city: "سوسة",
+            rating: 4.7,
+            reviews: 53,
+            hourlyRate: 28,
+            image: "https://public.youware.com/users-website-assets/prod/c528615e-cf6c-4a19-81c1-4db0d899d929/gdfd7ad6826683cd554aabc47570e68b6434a8dcd23cb3422ac9c740c8695f7cd9c4796dc7a7549cac3e1a31d61a0e3854f1ddea377b2c733a486356426c5c381_640.jpg"
+        }
+    ];
+
+    // Display worker profiles
+    displayWorkerProfiles(workers);
+
+    // Initialize Bootstrap Modals
+    const workerModal = new bootstrap.Modal(document.getElementById('workerModal'));
+    const clientModal = new bootstrap.Modal(document.getElementById('clientModal'));
+
+    // Handle form submissions
+    const workerForm = document.getElementById('workerForm');
+    if (workerForm) {
+        workerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('تم تسجيل الحساب بنجاح! سنتواصل معك قريبًا.');
+            workerModal.hide();
+        });
+    }
+
+    const clientForm = document.getElementById('clientForm');
+    if (clientForm) {
+        clientForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('تم تسجيل الحساب بنجاح! سنتواصل معك قريبًا.');
+            clientModal.hide();
+        });
+    }
+
+    // Make global functions for modal controls
+    window.showWorkerModal = function() {
+        workerModal.show();
+    };
+
+    window.showClientModal = function() {
+        clientModal.show();
+    };
+});
+
+// Function to display worker profiles
+function displayWorkerProfiles(workers) {
+    const workerProfilesContainer = document.getElementById('worker-profiles');
+    
+    if (!workerProfilesContainer) return;
+    
+    workerProfilesContainer.innerHTML = '';
+    
+    // Display only 3 workers for the home page
+    const displayedWorkers = workers.slice(0, 3);
+    
+    displayedWorkers.forEach(worker => {
+        const workerCard = document.createElement('div');
+        workerCard.className = 'col-md-4';
+        
+        const ratingStars = generateRatingStars(worker.rating);
+        
+        workerCard.innerHTML = `
+            <div class="worker-card">
+                <div class="card-body">
+                    <div class="worker-info">
+                        <img src="${worker.image}" alt="${worker.name}" class="worker-img">
+                        <div>
+                            <h5 class="mb-0">${worker.name}</h5>
+                            <p class="text-primary mb-0">${worker.specialty}</p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div>
+                                ${ratingStars} <span class="text-muted">(${worker.reviews})</span>
+                            </div>
+                            <span class="badge bg-primary">${worker.hourlyRate} د.ت/ساعة</span>
+                        </div>
+                        <div class="d-flex justify-content-between text-muted">
+                            <small>${worker.city}</small>
+                            <small>${worker.experience} سنوات خبرة</small>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-primary w-100" onclick="showClientModal()">
+                        <i class="fas fa-envelope me-2"></i>تواصل الآن
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        workerProfilesContainer.appendChild(workerCard);
+    });
+}
+
+// Function to generate rating stars
+function generateRatingStars(rating) {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    
+    let starsHTML = '';
+    
+    // Add full stars
+    for (let i = 0; i < fullStars; i++) {
+        starsHTML += '<i class="fas fa-star text-warning"></i>';
+    }
+    
+    // Add half star if needed
+    if (hasHalfStar) {
+        starsHTML += '<i class="fas fa-star-half-alt text-warning"></i>';
+    }
+    
+    // Add empty stars
+    for (let i = 0; i < emptyStars; i++) {
+        starsHTML += '<i class="far fa-star text-warning"></i>';
+    }
+    
+    return starsHTML;
+}
